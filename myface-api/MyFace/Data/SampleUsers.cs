@@ -124,6 +124,7 @@ namespace MyFace.Data
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
+                Password = "hello",
                 Email = Data[index][3],
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
