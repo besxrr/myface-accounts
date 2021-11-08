@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyFace.Data;
 using MyFace.Models.Database;
+using static MyFace.Helpers.PasswordHashHelper;
 
 namespace MyFace
 {
@@ -14,6 +15,12 @@ namespace MyFace
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
+            var header = EncodeBase64(new BasicAuth("test-user", "secret"));
+            Console.WriteLine(header);
+            var decoded = DecodeBase64(header);
+            Console.WriteLine($"Username: {decoded.Username}, Password: {decoded.Password}");
+            
 
             CreateDbIfNotExists(host);
             

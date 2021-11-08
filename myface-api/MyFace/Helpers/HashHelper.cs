@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
@@ -6,6 +7,18 @@ namespace MyFace.Helpers
 {
     public static class PasswordHashHelper
     {
+        public struct BasicAuth
+        {
+            public string Username;
+            public string Password;
+
+            public BasicAuth(string username, string password)
+            {
+                Username = username;
+                Password = password;
+            }
+        }
+
         public static string GetSalt()
         {
             // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
@@ -29,6 +42,20 @@ namespace MyFace.Helpers
                 numBytesRequested: 256 / 8));
 
             return hashed;
+        }
+
+        public static string EncodeBase64(BasicAuth user)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(user.Username + ':' + user.Password);
+            return Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static BasicAuth DecodeBase64(string header)
+        {
+            var base64EncodedBytes = Convert.FromBase64String(header);
+            var plainText = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            var strings = plainText.Split(':');
+            return new BasicAuth(strings[0], strings[1]);
         }
     }
 }
