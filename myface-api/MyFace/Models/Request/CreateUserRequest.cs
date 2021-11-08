@@ -20,6 +20,11 @@ namespace MyFace.Models.Request
         [StringLength(70)]
         public string Username { get; set; }
         
+        [Required]
+        [StringLength(70)]
+        //TODO - Add validation
+        public string Password { get; set; }
+        
         public string ProfileImageUrl { get; set; }
         
         public string CoverImageUrl { get; set; }

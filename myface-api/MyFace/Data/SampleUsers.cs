@@ -6,9 +6,9 @@ namespace MyFace.Data
 {
     public static class SampleUsers
     {
-        public static int NumberOfUsers = 100;
-        
-        private static IList<IList<string>> _data = new List<IList<string>>
+        public const int NumberOfUsers = 100;
+
+        private static readonly IList<IList<string>> Data = new List<IList<string>>
         {
             new List<string> { "Kania", "Placido", "kplacido0", "kplacido0@qq.com" },
             new List<string> { "Scotty", "Gariff", "sgariff1", "sgariff1@biblegateway.com" },
@@ -121,11 +121,12 @@ namespace MyFace.Data
         {
             return new User
             {
-                FirstName = _data[index][0],
-                LastName = _data[index][1],
-                Username = _data[index][2],
-                Email = _data[index][3],
-                ProfileImageUrl = ImageGenerator.GetProfileImage(_data[index][2]),
+                FirstName = Data[index][0],
+                LastName = Data[index][1],
+                Username = Data[index][2],
+                Password = "hello",
+                Email = Data[index][3],
+                ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
             };
         }
