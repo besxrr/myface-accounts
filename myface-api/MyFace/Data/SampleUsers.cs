@@ -111,9 +111,19 @@ namespace MyFace.Data
             new List<string> { "Jane", "Iceton", "jiceton2q", "jiceton2q@lulu.com" },
             new List<string> { "Marjy", "Beadell", "mbeadell2r", "mbeadell2r@delicious.com" }
         };
+
+        public static void AddPasswordsToGeneratedUsers()
+        {
+            foreach (var user in Data)
+            {
+                user.Insert(4, "hello");
+            }
+        }
         
         public static IEnumerable<User> GetUsers()
         {
+            //TODO Add random password generation
+            AddPasswordsToGeneratedUsers();
             return Enumerable.Range(0, NumberOfUsers).Select(CreateRandomUser);
         }
 
@@ -124,8 +134,9 @@ namespace MyFace.Data
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
-                Password = "hello",
                 Email = Data[index][3],
+                Salt = "",
+                HashedPassword = Data[index][4],
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
             };
