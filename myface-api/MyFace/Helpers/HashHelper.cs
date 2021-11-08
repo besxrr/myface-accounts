@@ -44,15 +44,18 @@ namespace MyFace.Helpers
             return hashed;
         }
 
-        public static string EncodeBase64(BasicAuth user)
+        public static string BasicAuthEncode(BasicAuth user)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(user.Username + ':' + user.Password);
-            return Convert.ToBase64String(plainTextBytes);
+            var converted =  Convert.ToBase64String(plainTextBytes);
+            return "Authorization: Basic " + converted;
         }
 
         public static BasicAuth DecodeBase64(string header)
         {
-            var base64EncodedBytes = Convert.FromBase64String(header);
+            //TODO What if user has a ':' in their name or password...
+            var trimmedHeader = header.Remove(0, 21);
+            var base64EncodedBytes = Convert.FromBase64String(trimmedHeader);
             var plainText = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
             var strings = plainText.Split(':');
             return new BasicAuth(strings[0], strings[1]);
