@@ -57,6 +57,7 @@ namespace MyFace.Helpers
             var trimmedHeader = header.Remove(0, 21);
             var base64EncodedBytes = Convert.FromBase64String(trimmedHeader);
             var plainText = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+            //TODO Must be a better way of doing this
             var strings = plainText.Split(':');
             return new BasicAuth(strings[0], strings[1]);
         }
