@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
+using static MyFace.Helpers.PasswordHashHelper;
 
 namespace MyFace.Repositories
 {
@@ -60,11 +61,15 @@ namespace MyFace.Repositories
 
         public User Create(CreateUserRequest newUser)
         {
+            var salt = GetSalt();
+            
             var insertResponse = _context.Users.Add(new User
             {
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Email = newUser.Email,
+                Salt = salt,
+                HashedPassword = GetHashedPassword(newUser.Password, salt),
                 Username = newUser.Username,
                 ProfileImageUrl = newUser.ProfileImageUrl,
                 CoverImageUrl = newUser.CoverImageUrl,
