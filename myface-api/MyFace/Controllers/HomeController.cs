@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MyFace.Controllers
 {
-    [ApiController]
-    [Route("")]
-    public class HomeController : ControllerBase
+    [Microsoft.AspNetCore.Components.Route("")]
+    public class HomeController
     {
         [HttpGet("")]
         public ActionResult<Dictionary<string, string>> Endpoints()
         {
+
             return new Dictionary<string, string>
             {
                 {"/users", "for information on users."},
@@ -17,6 +17,7 @@ namespace MyFace.Controllers
                 {"/interactions", "for information about the interactions between users and posts"},
                 {"/feeds", "all the data required to build a 'feed' of posts."},
             };
+
         }
     }
 }

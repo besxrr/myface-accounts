@@ -2,9 +2,9 @@
 
 namespace MyFace.Data
 {
-    public static class MessageGenerator
+    public class MessageGenerator
     {
-        private static readonly IList<string> Messages = new List<string>
+        private static IList<string> _messages = new List<string>
         {
             "He had a hidden stash underneath the floorboards in the back room of the house.",
             "For the 216th time, he said he would quit drinking soda after this last Coke.",
@@ -210,7 +210,7 @@ namespace MyFace.Data
 
         public static string GetMessage(int index)
         {
-            return Messages[index];
+            return _messages[index];
         }
     }
 }

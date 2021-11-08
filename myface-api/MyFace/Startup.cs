@@ -18,29 +18,33 @@ namespace MyFace
 
         public IConfiguration Configuration { get; }
 
-        private static string CORS_POLICY_NAME = "_myfaceCorsPolicy";
+        public static readonly ILoggerFactory
+            LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder => { builder.AddConsole(); });
 
+        private static string CORS_POLICY_NAME = "_myfaceCorsPolicy";
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MyFaceDbContext>(options =>
             {
-                options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+                options.UseLoggerFactory(LoggerFactory);
                 options.UseSqlite("Data Source=myface.db");
             });
 
             services.AddCors(options =>
             {
                 options.AddPolicy(CORS_POLICY_NAME, builder =>
+                {
                     builder
                         .WithOrigins("http://localhost:3000")
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader();
+                });
             });
-
+            
             services.AddControllers();
-
-            services.AddTransient<IInteractionsRepo, InteractionsRepo>();
+            
             services.AddTransient<IPostsRepo, PostsRepo>();
             services.AddTransient<IUsersRepo, UsersRepo>();
         }
@@ -64,7 +68,7 @@ namespace MyFace
 
             app.UseCors(CORS_POLICY_NAME);
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

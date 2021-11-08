@@ -3,9 +3,12 @@ using System.Linq;
 
 namespace MyFace.Data
 {
-    public static class ImageGenerator
+    public class ImageGenerator
     {
-        private static readonly IEnumerable<int> BrokenImages = new List<int>();
+        private static IEnumerable<int> _brokenImages = new List<int>
+        {
+
+        };
         
         public static string GetPostImage(int index)
         {
@@ -24,9 +27,12 @@ namespace MyFace.Data
 
         private static string GetImage(int index, int width, int height)
         {
-            return BrokenImages.Contains(index)
-                ? null 
-                : $"https://picsum.photos/id/{index}/{width}/{height}.jpg";
+            if (_brokenImages.Contains(index))
+            {
+                return null;
+            }
+
+            return $"https://picsum.photos/id/{index}/{width}/{height}.jpg";
         }
     }
 }

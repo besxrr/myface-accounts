@@ -27,7 +27,7 @@ namespace MyFace.Data
                 PostId = postUserPair.Item1,
                 UserId = postUserPair.Item2,
                 Type = RandomNumberGenerator.GetInteractionType(),
-                Date = DateGenerator.GetInteractionDate(),
+                Date = DateGenerator.GetPostDate(),
             };
         }
     }
