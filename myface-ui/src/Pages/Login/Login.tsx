@@ -1,6 +1,6 @@
 ﻿import React, {FormEvent, useContext, useState} from 'react';
 import {Page} from "../Page/Page";
-import {LoginContext} from "../../Components/LoginManager/LoginManager";
+import {LoginContext} from "../../Components/LoginProvider/LoginProvider";
 import "./Login.scss";
 
 export function Login(): JSX.Element {
@@ -11,7 +11,7 @@ export function Login(): JSX.Element {
     
     function tryLogin(event: FormEvent) {
         event.preventDefault();
-        loginContext.logIn();
+        loginContext.logIn(username, password);
     }
     
     return (

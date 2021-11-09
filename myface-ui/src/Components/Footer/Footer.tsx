@@ -1,6 +1,6 @@
 ﻿import React, {useContext} from "react";
 import "./Footer.scss";
-import {LoginContext} from "../LoginManager/LoginManager";
+import {LoginContext} from "../LoginProvider/LoginProvider";
 
 export function Footer(): JSX.Element {
     const loginContext = useContext(LoginContext);
