@@ -51,7 +51,7 @@ namespace MyFaceTesting
         }
         
         [Fact]
-        public async Task POST_creates_a_post_if_user_authorized()
+        public async Task CanCreatePostIfUserAuthorized()
         {
             var request = new
             {
@@ -77,7 +77,7 @@ namespace MyFaceTesting
         }
         
         [Fact]
-        public async Task POST_does_NOT_create_a_post_if_user_not_authorized()
+        public async Task CannotCreatePostIfUserNotAuthorized()
         {
             var request = new
             {
