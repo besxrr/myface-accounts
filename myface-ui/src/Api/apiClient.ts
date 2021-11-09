@@ -75,7 +75,7 @@ export async function createPost(newPost: NewPost) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic dGVzdC11c2VyOnNlY3JldA=="
+            "Authorization": "Basic a3BsYWNpZG8wOmhlbGx"
         },
         body: JSON.stringify(newPost),
     });
