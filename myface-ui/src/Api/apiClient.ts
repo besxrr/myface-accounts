@@ -84,3 +84,16 @@ export async function createPost(newPost: NewPost) {
         throw new Error(await response.json())
     }
 }
+
+export async function logIn(authHeader:{Authorization:string}){
+    const response = await fetch(`https://localhost:5001/login`,{
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    })
+    if(!response.ok){
+        throw new Error("Login Failed!")
+    }
+    return true;
+}
