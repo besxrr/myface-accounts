@@ -13,12 +13,12 @@ using Xunit.Abstractions;
 
 namespace MyFaceTesting
 {
-    public class PostsTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+    public class PostsControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
         private readonly CustomWebApplicationFactory<Startup> _factory;
 
-        public PostsTests(CustomWebApplicationFactory<Startup> factory, ITestOutputHelper testOutputHelper)
+        public PostsControllerTests(CustomWebApplicationFactory<Startup> factory, ITestOutputHelper testOutputHelper)
         {
             _factory = factory;
             _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -30,8 +30,7 @@ namespace MyFaceTesting
         [Fact]
         public async Task CheckGetsAResponse()
         {
-            var client = _factory.CreateClient();
-            var response = await client.GetAsync("/");
+            var response = await _client.GetAsync("/");
             response.EnsureSuccessStatusCode();
         }
         
@@ -64,10 +63,9 @@ namespace MyFaceTesting
                 }
             };
         
-            var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Basic a3BsYWNpZG8wOmhlbGxv");
+            _client.DefaultRequestHeaders.Add("Authorization", "Basic a3BsYWNpZG8wOmhlbGxv");
         
-            var response = await client.PostAsync(request.Url, ContentHelper.GetStringContent(request.Body));
+            var response = await _client.PostAsync(request.Url, ContentHelper.GetStringContent(request.Body));
             //Must be successful
             response.EnsureSuccessStatusCode();
 
@@ -89,13 +87,11 @@ namespace MyFaceTesting
                     UserId = 1
                 }
             };
-        
-            var client = _factory.CreateClient();
             
             //Change one letter in header
-            client.DefaultRequestHeaders.Add("Authorization", "Basic a3BsYWNpZG8wOmhlbGxa");
+            _client.DefaultRequestHeaders.Add("Authorization", "Basic a3BsYWNpZG8wOmhlbGxa");
         
-            var response = await client.PostAsync(request.Url, ContentHelper.GetStringContent(request.Body));
+            var response = await _client.PostAsync(request.Url, ContentHelper.GetStringContent(request.Body));
             //Must not be successful
             Assert.False(response.IsSuccessStatusCode);
         }
