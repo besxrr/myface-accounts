@@ -8,6 +8,7 @@ import "./Profile.scss";
 import {Users} from "../Users/Users";
 
 export function Profile(): JSX.Element {
+    // @ts-ignore
     const {id} = useParams();
     
     if (id === undefined) {

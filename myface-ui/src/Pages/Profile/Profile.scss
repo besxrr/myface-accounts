@@ -3,5 +3,10 @@
 .profile {
   .activity {
     margin: $gutter-width;
+
+    section h2 {
+      text-align: center;
+      padding-bottom: 10px;
+    }
   }
 }

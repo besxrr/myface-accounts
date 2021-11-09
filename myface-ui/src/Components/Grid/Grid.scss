@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: -10px;
+  margin: -10px auto;
+  width: min(90vw, 60em);
   
   .list-item {
     flex-grow: 1;
