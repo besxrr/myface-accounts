@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
+using static MyFace.Helpers.PasswordHashHelper;
+
 
 namespace MyFace.Controllers
 {
@@ -11,11 +14,14 @@ namespace MyFace.Controllers
     {    
         private readonly IPostsRepo _posts;
 
-        public PostsController(IPostsRepo posts)
+        private readonly IUsersRepo _users;
+
+        public PostsController(IPostsRepo posts, IUsersRepo users)
         {
             _posts = posts;
+            _users = users;
         }
-        
+
         [HttpGet("")]
         public ActionResult<PostListResponse> Search([FromQuery] PostSearchRequest searchRequest)
         {
@@ -38,7 +44,14 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
+            var authUser = DecodeAuthHeader(Request.Headers["Authorization"]);
+            var queryUser = _users.QueryByUsername(authUser.Username);
+            var passwordHashed = GetHashedPassword(authUser.Password, queryUser.Salt);
+            if(passwordHashed != queryUser.HashedPassword)
+            {
+                return StatusCode(401, "Authentication Failed!");
+            }
             var post = _posts.Create(newPost);
 
             var url = Url.Action("GetById", new { id = post.Id });
