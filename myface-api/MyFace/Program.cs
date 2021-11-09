@@ -16,9 +16,9 @@ namespace MyFace
         {
             var host = CreateHostBuilder(args).Build();
 
-            var header = BasicAuthEncode(new BasicAuth("test-user", "secret"));
+            var header = EncodeAuthHeader(new BasicAuth("test-user", "secret"));
             Console.WriteLine(header);
-            var decoded = DecodeBase64(header);
+            var decoded = DecodeAuthHeader(header);
             Console.WriteLine($"Username: {decoded.Username}, Password: {decoded.Password}");
             
 
