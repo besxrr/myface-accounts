@@ -1,7 +1,9 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyFace.Repositories;
 using static MyFace.Helpers.PasswordHashHelper;
+using static MyFace.Helpers.AuthorizationHelper;
 
 namespace MyFace.Controllers
 {
@@ -19,23 +21,13 @@ namespace MyFace.Controllers
         [HttpGet("")]
         public IActionResult LogIn()
         {
-            try
+            if (IsUserAuthorized(_users, Request))
             {
-                var authUser = DecodeAuthHeader(Request.Headers["Authorization"]);
-                var queryUser = _users.QueryByUsername(authUser.Username);
-                var passwordHashed = GetHashedPassword(authUser.Password, queryUser.Salt);
-                if (passwordHashed == queryUser.HashedPassword)
-                {
-                    return StatusCode(200);
-                }
-                throw new Exception();
+                return StatusCode(200);
             }
-            catch (Exception e)
-            {
-                return StatusCode(401, "Authentication Failed!");
-            }
-            
+            return StatusCode(401, "Authentication Failed!");
         }
+        
     }
     
 }

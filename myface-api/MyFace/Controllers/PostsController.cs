@@ -1,9 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
 using static MyFace.Helpers.PasswordHashHelper;
+using static MyFace.Helpers.AuthorizationHelper;
 
 
 namespace MyFace.Controllers
@@ -44,17 +46,14 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var authUser = DecodeAuthHeader(Request.Headers["Authorization"]);
-            var queryUser = _users.QueryByUsername(authUser.Username);
-            var passwordHashed = GetHashedPassword(authUser.Password, queryUser.Salt);
-            if(passwordHashed != queryUser.HashedPassword)
+            
+            if (!IsUserAuthorized(_users, Request))
             {
                 return StatusCode(401, "Authentication Failed!");
             }
+            
             var post = _posts.Create(newPost);
-
-            var url = Url.Action("GetById", new { id = post.Id });
+            var url = Url.Action("GetById", new {id = post.Id});
             var postResponse = new PostResponse(post);
             return Created(url, postResponse);
         }

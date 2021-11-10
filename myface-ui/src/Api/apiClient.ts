@@ -1,4 +1,7 @@
-﻿export interface ListResponse<T> {
+﻿import {LoginContext} from "../Components/LoginProvider/LoginProvider";
+import {create} from "domain";
+
+export interface ListResponse<T> {
     items: T[];
     totalNumberOfItems: number;
     page: number;
@@ -70,12 +73,12 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
     return await response.json();
 }
 
-export async function createPost(newPost: NewPost) {
+export async function createPost(newPost: NewPost, authHeader: {Authorization:string} | undefined) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Basic a3BsYWNpZG8wOmhlbGx"
+            ...authHeader
         },
         body: JSON.stringify(newPost),
     });
