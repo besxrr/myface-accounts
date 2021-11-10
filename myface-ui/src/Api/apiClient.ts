@@ -60,8 +60,16 @@ export async function fetchUsers(searchTerm: string, page: number, pageSize: num
     return await response.json();
 }
 
-export async function fetchUser(userId: string | number): Promise<User> {
-    const response = await fetch(`https://localhost:5001/users/${userId}`);
+export async function fetchUser(userId: string | number, authHeader: AuthHeader | undefined): Promise<User> {
+    const response = await fetch(`https://localhost:5001/users/${userId}`, {
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    });
+    if(!response.ok){
+        throw new Error(await response.json())
+    }
     return await response.json();
 }
 
