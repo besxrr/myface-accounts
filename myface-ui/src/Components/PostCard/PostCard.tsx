@@ -18,6 +18,10 @@ export function PostCard(props: PostCardProps): JSX.Element {
                     <img className="profile-image" src={props.post.postedBy.profileImageUrl} alt=""/>
                     <Link className="user-name" to={`/users/${props.post.postedBy.id}`}>{props.post.postedBy.displayName}</Link>
                 </div>
+                <div className="interactions">
+                    <p>👍 {props.post.likes.length}</p>
+                    <p>👎 {props.post.dislikes.length}</p>
+                </div>
             </div>
         </Card>
     );

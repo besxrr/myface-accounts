@@ -85,9 +85,12 @@ export async function fetchPosts(page: number, pageSize: number, authHeader: Aut
     return await response.json();
 }
 
-export async function fetchPostsForUser(page: number, pageSize: number, userId: string | number) {
+export async function fetchPostsForUser(page: number, pageSize: number, userId: string | number, authHeader: AuthHeader | undefined) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&postedBy=${userId}`, {
         method: "GET",
+        headers: {
+            ...authHeader
+        }
     });
     if(!response.ok){
         throw new Error(await response.json())

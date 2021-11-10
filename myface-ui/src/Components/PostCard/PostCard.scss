@@ -41,4 +41,11 @@
     @include labelFont;
     padding: 0 $spacing-medium;
   }
+
+  .interactions {
+    display: flex;
+    gap: 20px;
+    padding-top: 10px;
+    justify-content: right;
+  }
 }
