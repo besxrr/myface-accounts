@@ -43,8 +43,20 @@ export interface NewPost {
     userId: number;
 }
 
-export async function fetchUsers(searchTerm: string, page: number, pageSize: number): Promise<ListResponse<User>> {
-    const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`);
+export interface AuthHeader {
+    Authorization: string;
+}
+
+export async function fetchUsers(searchTerm: string, page: number, pageSize: number, authHeader: AuthHeader | undefined): Promise<ListResponse<User>> {
+    const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    });
+    if(!response.ok){
+        throw new Error(await response.json())
+    }
     return await response.json();
 }
 
@@ -73,7 +85,7 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
     return await response.json();
 }
 
-export async function createPost(newPost: NewPost, authHeader: {Authorization:string} | undefined) {
+export async function createPost(newPost: NewPost, authHeader: AuthHeader | undefined) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
