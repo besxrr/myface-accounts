@@ -73,8 +73,16 @@ export async function fetchUser(userId: string | number, authHeader: AuthHeader 
     return await response.json();
 }
 
-export async function fetchPosts(page: number, pageSize: number): Promise<ListResponse<Post>> {
-    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`);
+export async function fetchPosts(page: number, pageSize: number, authHeader: AuthHeader | undefined): Promise<ListResponse<Post>> {
+    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}`, {
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    });
+    if(!response.ok){
+        throw new Error(await response.json())
+    }
     return await response.json();
 }
 
