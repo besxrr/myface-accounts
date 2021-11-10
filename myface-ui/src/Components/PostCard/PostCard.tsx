@@ -13,16 +13,16 @@ export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
     const [likesCount, setLikesCount] = useState(props.post.likes.length);
     const [dislikesCount, setDislikesCount] = useState(props.post.dislikes.length);
-    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName));
+    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName && i.type == InteractionType.LIKE));
+    const [userHasDisliked, setUserHasDisliked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName && i.type == InteractionType.DISLIKE));
 
     useEffect(() => {
         (async () => {
             const interactionCount = await fetchInteractionsForPost(props.post.id)
-            console.log(interactionCount.likes)
             setLikesCount(interactionCount.likes)
             setDislikesCount(interactionCount.dislikes)
         })()
-    },[userHasLiked])
+    },[userHasLiked, userHasDisliked])
 
     const LikePost = async () => {
         await createInteraction({
@@ -30,21 +30,16 @@ export function PostCard(props: PostCardProps): JSX.Element {
             PostId: props.post.id,
         }, loginContext.header);
         setUserHasLiked(!userHasLiked);
+        setUserHasDisliked(!userHasDisliked);
     }
 
     const DislikePost = async () => {
-        const response = createInteraction(  {
+        await createInteraction({
             InteractionType: InteractionType.DISLIKE,
             PostId: props.post.id,
-        }, loginContext.header)
-        response.then(i => {
-            if (i.status == 201) {
-                setLikesCount(dislikesCount + 1)
-            } else if (i.status == 204) {
-                setLikesCount(dislikesCount - 1)
-            }
-        })
-
+        }, loginContext.header);
+        setUserHasLiked(!userHasLiked);
+        setUserHasDisliked(!userHasDisliked);
     }
 
     return (
