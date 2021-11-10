@@ -16,8 +16,8 @@ namespace MyFace.Models.Response
             _interactionCount = interactionCount;
         }
 
-        public int likes => _interactionCount.Likes;
-        public int dislikes => _interactionCount.Dislikes;
+        public int Likes => _interactionCount.Likes;
+        public int Dislikes => _interactionCount.Dislikes;
 
     }
 }

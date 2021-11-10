@@ -4,6 +4,7 @@ import {logIn as verifyLogInDetails}  from "../../Api/apiClient";
 
 interface ILoginContext{
     header?: {Authorization:string};
+    userName?: string;
     isAdmin: boolean;
     logIn:(name:string, password:string) => void;
     logOut: () => void;
@@ -18,6 +19,7 @@ interface LoginManagerProps {
 export function LoginProvider(props: LoginManagerProps): JSX.Element {
 
     const [header, setHeader] = useState<undefined|{Authorization:string}>(undefined);
+    const [userName, setUserName] = useState<string| undefined>(undefined);
 
     async function  logIn(name:string, password:string) {
         const encodedHeader = encodeHeader(name, password)
@@ -26,6 +28,7 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
             //If successful, update context to store the value of the HEADER
             //Store the user info
             setHeader(encodedHeader)
+            setUserName(name)
         }
         catch (e){
             setHeader(undefined)
@@ -39,6 +42,7 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
     const context = {
         isAdmin: header !== undefined,
         header: header,
+        userName: userName,
         logIn: logIn,
         logOut: logOut,
     };

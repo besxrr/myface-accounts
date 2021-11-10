@@ -12,7 +12,7 @@ namespace MyFace.Repositories
         int Count(SearchRequest search);
         Interaction GetById(int id);
         Interaction Create(CreateInteractionRequest create);
-        bool InteractionAlreadyExists(CreateInteractionRequest create);
+        int? GetInteractionId(CreateInteractionRequest create);
         void Delete(int id);
     }
     
@@ -42,9 +42,17 @@ namespace MyFace.Repositories
             return _context.Interactions.Single(i => i.Id == id);
         }
 
-        public bool InteractionAlreadyExists(CreateInteractionRequest create)
+        public int? GetInteractionId(CreateInteractionRequest create)
         {
-            return _context.Interactions.Any(i => i.UserId == create.UserId && i.Type == create.InteractionType && i.PostId == create.PostId);
+            try
+            {
+                return _context.Interactions.First(i =>
+                    i.UserId == create.UserId && i.Type == create.InteractionType && i.PostId == create.PostId).Id;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public Interaction Create(CreateInteractionRequest create)

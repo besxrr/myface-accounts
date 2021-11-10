@@ -53,6 +53,11 @@ export interface AuthHeader {
     Authorization: string;
 }
 
+export interface InteractionCount {
+    likes: number;
+    dislikes: number;
+}
+
 export async function fetchUsers(searchTerm: string, page: number, pageSize: number, authHeader: AuthHeader | undefined): Promise<ListResponse<User>> {
     const response = await fetch(`https://localhost:5001/users?search=${searchTerm}&page=${page}&pageSize=${pageSize}`, {
         method: "GET",
@@ -105,7 +110,7 @@ export async function fetchPostsForUser(page: number, pageSize: number, userId: 
     return await response.json();
 }
 
-export async function fetchInteractionsForPost(postId: number) {
+export async function fetchInteractionsForPost(postId: number): Promise<InteractionCount> {
     const response = await fetch(`https://localhost:5001/posts/${postId}/interactions`, {
         method: "GET"
     });

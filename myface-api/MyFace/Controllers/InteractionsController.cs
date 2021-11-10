@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -50,10 +51,13 @@ namespace MyFace.Controllers
             }
             
             newInteraction.UserId = (int) userId;
+
+            var foundId = _interactions.GetInteractionId(newInteraction);
             
-            if (_interactions.InteractionAlreadyExists(newInteraction))
+            if (foundId != null)
             {
-                return StatusCode(409, "Interaction already exists");
+                _interactions.Delete((int) foundId);
+                return StatusCode(204, "Interaction deleted");
             }
             
             var interaction = _interactions.Create(newInteraction);

@@ -1,5 +1,5 @@
 ﻿import React, {useContext, useEffect, useState} from "react";
-import {createInteraction, InteractionType, Post} from "../../Api/apiClient";
+import {createInteraction, fetchInteractionsForPost, InteractionType, Post} from "../../Api/apiClient";
 import {Card} from "../Card/Card";
 import "./PostCard.scss";
 import {Link} from "react-router-dom";
@@ -13,20 +13,23 @@ export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
     const [likesCount, setLikesCount] = useState(props.post.likes.length);
     const [dislikesCount, setDislikesCount] = useState(props.post.dislikes.length);
+    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName));
 
     useEffect(() => {
-    },[likesCount, dislikesCount])
+        (async () => {
+            const interactionCount = await fetchInteractionsForPost(props.post.id)
+            console.log(interactionCount.likes)
+            setLikesCount(interactionCount.likes)
+            setDislikesCount(interactionCount.dislikes)
+        })()
+    },[userHasLiked])
 
     const LikePost = async () => {
-        const response = createInteraction({
+        await createInteraction({
             InteractionType: InteractionType.LIKE,
             PostId: props.post.id,
         }, loginContext.header);
-        response.then(i => {
-            if (i.ok) {
-                setLikesCount(likesCount + 1)
-            }
-        })
+        setUserHasLiked(!userHasLiked);
     }
 
     const DislikePost = async () => {
@@ -35,8 +38,10 @@ export function PostCard(props: PostCardProps): JSX.Element {
             PostId: props.post.id,
         }, loginContext.header)
         response.then(i => {
-            if (i.ok) {
-                setDislikesCount(dislikesCount + 1)
+            if (i.status == 201) {
+                setLikesCount(dislikesCount + 1)
+            } else if (i.status == 204) {
+                setLikesCount(dislikesCount - 1)
             }
         })
 
