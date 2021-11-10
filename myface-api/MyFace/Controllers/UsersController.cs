@@ -2,7 +2,7 @@
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
-using static MyFace.Helpers.AuthorizationHelper;
+using static MyFace.Helpers.AuthenticationHelper;
 
 namespace MyFace.Controllers
 {
@@ -20,7 +20,7 @@ namespace MyFace.Controllers
         [HttpGet("")]
         public ActionResult<UserListResponse> Search([FromQuery] UserSearchRequest searchRequest)
         {
-            if (!IsUserAuthorized(_users, Request))
+            if (!IsUserAuthenticated(_users, Request))
             {
                 return StatusCode(401, "Authentication Failed!");
             }
@@ -33,7 +33,7 @@ namespace MyFace.Controllers
         [HttpGet("{id}")]
         public ActionResult<UserResponse> GetById([FromRoute] int id)
         {
-            if (!IsUserAuthorized(_users, Request))
+            if (!IsUserAuthenticated(_users, Request))
             {
                 return StatusCode(401, "Authentication Failed!");
             }

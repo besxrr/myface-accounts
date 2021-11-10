@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
 using static MyFace.Helpers.PasswordHashHelper;
-using static MyFace.Helpers.AuthorizationHelper;
+using static MyFace.Helpers.AuthenticationHelper;
 
 
 namespace MyFace.Controllers
@@ -46,12 +47,14 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
-            if (!IsUserAuthorized(_users, Request))
+
+            var userId = GetUserIdFromRequest(_users, Request);
+            if (userId == null)
             {
                 return StatusCode(401, "Authentication Failed!");
-            }
+            } 
             
+            newPost.UserId = (int) userId;
             var post = _posts.Create(newPost);
             var url = Url.Action("GetById", new {id = post.Id});
             var postResponse = new PostResponse(post);
