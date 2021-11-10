@@ -108,5 +108,6 @@ namespace MyFace.Repositories
         {
             return _context.Users.Single(user => user.Username == username);
         }
+        
     }
 }
