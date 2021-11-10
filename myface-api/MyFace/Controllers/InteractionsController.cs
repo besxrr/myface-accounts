@@ -48,8 +48,14 @@ namespace MyFace.Controllers
             {
                 return StatusCode(401, "Authentication Failed!");
             }
-
+            
             newInteraction.UserId = (int) userId;
+            
+            if (_interactions.InteractionAlreadyExists(newInteraction))
+            {
+                return StatusCode(409, "Interaction already exists");
+            }
+            
             var interaction = _interactions.Create(newInteraction);
             var url = Url.Action("GetById", new {id = interaction.Id});
             var responseViewModel = new InteractionResponse(interaction);

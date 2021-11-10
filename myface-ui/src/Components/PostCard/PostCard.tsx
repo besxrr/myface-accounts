@@ -18,21 +18,27 @@ export function PostCard(props: PostCardProps): JSX.Element {
     },[likesCount, dislikesCount])
 
     const LikePost = async () => {
-        createInteraction({
+        const response = createInteraction({
             InteractionType: InteractionType.LIKE,
             PostId: props.post.id,
         }, loginContext.header);
-        // new likes from count api request
-        // const newLikes = getLikesByPostId(props.post.id)
-        // setLikesCount(newLikes)
+        response.then(i => {
+            if (i.ok) {
+                setLikesCount(likesCount + 1)
+            }
+        })
     }
 
     const DislikePost = async () => {
-        createInteraction(  {
+        const response = createInteraction(  {
             InteractionType: InteractionType.DISLIKE,
             PostId: props.post.id,
         }, loginContext.header)
-        setDislikesCount(dislikesCount + 1);
+        response.then(i => {
+            if (i.ok) {
+                setDislikesCount(dislikesCount + 1)
+            }
+        })
 
     }
 

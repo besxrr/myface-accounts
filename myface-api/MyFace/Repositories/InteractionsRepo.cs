@@ -12,6 +12,7 @@ namespace MyFace.Repositories
         int Count(SearchRequest search);
         Interaction GetById(int id);
         Interaction Create(CreateInteractionRequest create);
+        bool InteractionAlreadyExists(CreateInteractionRequest create);
         void Delete(int id);
     }
     
@@ -39,6 +40,11 @@ namespace MyFace.Repositories
         public Interaction GetById(int id)
         {
             return _context.Interactions.Single(i => i.Id == id);
+        }
+
+        public bool InteractionAlreadyExists(CreateInteractionRequest create)
+        {
+            return _context.Interactions.Any(i => i.UserId == create.UserId && i.Type == create.InteractionType && i.PostId == create.PostId);
         }
 
         public Interaction Create(CreateInteractionRequest create)

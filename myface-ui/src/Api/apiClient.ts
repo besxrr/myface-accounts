@@ -105,6 +105,17 @@ export async function fetchPostsForUser(page: number, pageSize: number, userId: 
     return await response.json();
 }
 
+export async function fetchInteractionsForPost(postId: number) {
+    const response = await fetch(`https://localhost:5001/posts/${postId}/interactions`, {
+        method: "GET"
+    });
+    if (!response.ok) {
+        throw new Error(await response.json())
+    }
+    return await response.json();
+}
+
+
 export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number, authHeader: AuthHeader | undefined) {
     const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&likedBy=${userId}`, {
         method: "GET",
@@ -157,9 +168,8 @@ export async function createInteraction(newInteraction: NewInteraction, authHead
         body: JSON.stringify(newInteraction)
     });
 
-    if (!response.ok) {
-        throw new Error(await response.json())
-    }
+
+    return response;
 }
 
 export async function logIn(authHeader: { Authorization: string }) {
