@@ -1,7 +1,4 @@
-﻿import {LoginContext} from "../Components/LoginProvider/LoginProvider";
-import {create} from "domain";
-
-export interface ListResponse<T> {
+﻿export interface ListResponse<T> {
     items: T[];
     totalNumberOfItems: number;
     page: number;
@@ -20,10 +17,15 @@ export interface User {
     coverImageUrl: string;
 }
 
+export enum InteractionType{
+    LIKE,
+    DISLIKE
+}
+
 export interface Interaction {
     id: number;
     user: User;
-    type: string;
+    type: InteractionType;
     date: string;
 }
 
@@ -42,6 +44,11 @@ export interface NewPost {
     imageUrl: string;
 }
 
+export interface NewInteraction {
+    InteractionType: InteractionType;
+    PostId: number;
+}
+
 export interface AuthHeader {
     Authorization: string;
 }
@@ -53,7 +60,7 @@ export async function fetchUsers(searchTerm: string, page: number, pageSize: num
             ...authHeader
         }
     });
-    if(!response.ok){
+    if (!response.ok) {
         throw new Error(await response.json())
     }
     return await response.json();
@@ -66,7 +73,7 @@ export async function fetchUser(userId: string | number, authHeader: AuthHeader 
             ...authHeader
         }
     });
-    if(!response.ok){
+    if (!response.ok) {
         throw new Error(await response.json())
     }
     return await response.json();
@@ -79,7 +86,7 @@ export async function fetchPosts(page: number, pageSize: number, authHeader: Aut
             ...authHeader
         }
     });
-    if(!response.ok){
+    if (!response.ok) {
         throw new Error(await response.json())
     }
     return await response.json();
@@ -92,19 +99,36 @@ export async function fetchPostsForUser(page: number, pageSize: number, userId: 
             ...authHeader
         }
     });
-    if(!response.ok){
+    if (!response.ok) {
         throw new Error(await response.json())
     }
     return await response.json();
 }
 
-export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number) {
-    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&likedBy=${userId}`);
+export async function fetchPostsLikedBy(page: number, pageSize: number, userId: string | number, authHeader: AuthHeader | undefined) {
+    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&likedBy=${userId}`, {
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    });
+    if (!response.ok) {
+        throw new Error(await response.json())
+    }
     return await response.json();
 }
 
-export async function fetchPostsDislikedBy(page: number, pageSize: number, userId: string | number) {
-    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&dislikedBy=${userId}`);
+
+export async function fetchPostsDislikedBy(page: number, pageSize: number, userId: string | number, authHeader: AuthHeader | undefined) {
+    const response = await fetch(`https://localhost:5001/feed?page=${page}&pageSize=${pageSize}&dislikedBy=${userId}`, {
+        method: "GET",
+        headers: {
+            ...authHeader
+        }
+    });
+    if (!response.ok) {
+        throw new Error(await response.json())
+    }
     return await response.json();
 }
 
@@ -117,20 +141,35 @@ export async function createPost(newPost: NewPost, authHeader: AuthHeader | unde
         },
         body: JSON.stringify(newPost),
     });
-    
+
     if (!response.ok) {
         throw new Error(await response.json())
     }
 }
 
-export async function logIn(authHeader:{Authorization:string}){
-    const response = await fetch(`https://localhost:5001/login`,{
+export async function createInteraction(newInteraction: NewInteraction, authHeader: AuthHeader | undefined) {
+    const response = await fetch('https://localhost:5001/interactions/create', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            ...authHeader
+        },
+        body: JSON.stringify(newInteraction)
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.json())
+    }
+}
+
+export async function logIn(authHeader: { Authorization: string }) {
+    const response = await fetch(`https://localhost:5001/login`, {
         method: "GET",
         headers: {
             ...authHeader
         }
     })
-    if(!response.ok){
+    if (!response.ok) {
         throw new Error("Login Failed!")
     }
     return true;

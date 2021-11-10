@@ -2,6 +2,7 @@
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
+using static MyFace.Helpers.AuthenticationHelper;
 
 namespace MyFace.Controllers
 {
@@ -12,10 +13,12 @@ namespace MyFace.Controllers
         public class UsersController : ControllerBase
         {
             private readonly IInteractionsRepo _interactions;
+            private readonly IUsersRepo _users;
 
-            public UsersController(IInteractionsRepo interactions)
+            public UsersController(IInteractionsRepo interactions, IUsersRepo users)
             {
                 _interactions = interactions;
+                _users = users;
             }
         
             [HttpGet("")]
@@ -34,15 +37,21 @@ namespace MyFace.Controllers
             }
 
             [HttpPost("create")]
-            public IActionResult Create([FromBody] CreateInteractionRequest newUser)
+            public IActionResult Create([FromBody] CreateInteractionRequest newInteraction)
             {
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
-            
-                var interaction = _interactions.Create(newUser);
-
+                
+                var userId = GetUserIdFromRequest(_users, Request);
+                if (userId == null)
+                {
+                    return StatusCode(401, "Authentication Failed!");
+                } 
+                
+                newInteraction.UserId = (int) userId;
+                var interaction = _interactions.Create(newInteraction);
                 var url = Url.Action("GetById", new { id = interaction.Id });
                 var responseViewModel = new InteractionResponse(interaction);
                 return Created(url, responseViewModel);
