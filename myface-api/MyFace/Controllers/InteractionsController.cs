@@ -6,63 +6,60 @@ using static MyFace.Helpers.AuthenticationHelper;
 
 namespace MyFace.Controllers
 {
-    public class InteractionsController
+    [ApiController]
+    [Route("/interactions")]
+    public class InteractionsController : ControllerBase
     {
-        [ApiController]
-        [Route("/interactions")]
-        public class UsersController : ControllerBase
+        private readonly IInteractionsRepo _interactions;
+        private readonly IUsersRepo _users;
+
+        public InteractionsController(IInteractionsRepo interactions, IUsersRepo users)
         {
-            private readonly IInteractionsRepo _interactions;
-            private readonly IUsersRepo _users;
+            _interactions = interactions;
+            _users = users;
+        }
 
-            public UsersController(IInteractionsRepo interactions, IUsersRepo users)
-            {
-                _interactions = interactions;
-                _users = users;
-            }
-        
-            [HttpGet("")]
-            public ActionResult<ListResponse<InteractionResponse>> Search([FromQuery] SearchRequest search)
-            {
-                var interactions = _interactions.Search(search);
-                var interactionCount = _interactions.Count(search);
-                return InteractionListResponse.Create(search, interactions, interactionCount);
-            }
+        [HttpGet("")]
+        public ActionResult<ListResponse<InteractionResponse>> Search([FromQuery] SearchRequest search)
+        {
+            var interactions = _interactions.Search(search);
+            var interactionCount = _interactions.Count(search);
+            return InteractionListResponse.Create(search, interactions, interactionCount);
+        }
 
-            [HttpGet("{id}")]
-            public ActionResult<InteractionResponse> GetById([FromRoute] int id)
-            {
-                var interaction = _interactions.GetById(id);
-                return new InteractionResponse(interaction);
-            }
+        [HttpGet("{id}")]
+        public ActionResult<InteractionResponse> GetById([FromRoute] int id)
+        {
+            var interaction = _interactions.GetById(id);
+            return new InteractionResponse(interaction);
+        }
 
-            [HttpPost("create")]
-            public IActionResult Create([FromBody] CreateInteractionRequest newInteraction)
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] CreateInteractionRequest newInteraction)
+        {
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                
-                var userId = GetUserIdFromRequest(_users, Request);
-                if (userId == null)
-                {
-                    return StatusCode(401, "Authentication Failed!");
-                } 
-                
-                newInteraction.UserId = (int) userId;
-                var interaction = _interactions.Create(newInteraction);
-                var url = Url.Action("GetById", new { id = interaction.Id });
-                var responseViewModel = new InteractionResponse(interaction);
-                return Created(url, responseViewModel);
+                return BadRequest(ModelState);
             }
 
-            [HttpDelete("{id}")]
-            public IActionResult Delete([FromRoute] int id)
+            var userId = GetUserIdFromRequest(_users, Request);
+            if (userId == null)
             {
-                _interactions.Delete(id);
-                return Ok();
+                return StatusCode(401, "Authentication Failed!");
             }
+
+            newInteraction.UserId = (int) userId;
+            var interaction = _interactions.Create(newInteraction);
+            var url = Url.Action("GetById", new {id = interaction.Id});
+            var responseViewModel = new InteractionResponse(interaction);
+            return Created(url, responseViewModel);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            _interactions.Delete(id);
+            return Ok();
         }
     }
 }

@@ -6,8 +6,8 @@ import "./Login.scss";
 export function Login(): JSX.Element {
     const loginContext = useContext(LoginContext);
     
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("kplacido0");
+    const [password, setPassword] = useState("hello");
     
     function tryLogin(event: FormEvent) {
         event.preventDefault();
