@@ -33,6 +33,7 @@ namespace MyFace.Controllers
             var interaction = _interactions.GetById(id);
             return new InteractionResponse(interaction);
         }
+        
 
         [HttpPost("create")]
         public IActionResult Create([FromBody] CreateInteractionRequest newInteraction)

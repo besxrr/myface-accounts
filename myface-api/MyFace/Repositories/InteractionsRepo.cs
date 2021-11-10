@@ -60,5 +60,6 @@ namespace MyFace.Repositories
             _context.Interactions.Remove(interaction);
             _context.SaveChanges();
         }
+
     }
 }

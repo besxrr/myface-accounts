@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
@@ -38,6 +39,14 @@ namespace MyFace.Controllers
         {
             var post = _posts.GetById(id);
             return new PostResponse(post);
+        }
+        
+        [HttpGet("{id}/interactions")]
+        public GetInteractionCountResponse GetInteractionCountByPostId([FromRoute] int id)
+        {
+            var interactionCount = _posts.GetInteractionCountByPostId(id);
+            
+            return new GetInteractionCountResponse(interactionCount);
         }
 
         [HttpPost("create")]

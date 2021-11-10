@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
+using MyFace.Models.Response;
+using Interaction = Microsoft.VisualBasic.Interaction;
 
 namespace MyFace.Repositories
 {
@@ -17,6 +19,8 @@ namespace MyFace.Repositories
         Post Create(CreatePostRequest post);
         Post Update(int id, UpdatePostRequest update);
         void Delete(int id);
+        InteractionCount GetInteractionCountByPostId(int postId);
+
     }
     
     public class PostsRepo : IPostsRepo
@@ -104,6 +108,17 @@ namespace MyFace.Repositories
             var post = GetById(id);
             _context.Posts.Remove(post);
             _context.SaveChanges();
+        }
+        
+        public InteractionCount GetInteractionCountByPostId(int postId)
+        {
+            var likes = _context.Interactions.Count(i => i.Type == InteractionType.LIKE && i.PostId == postId);
+            var dislikes = _context.Interactions.Count(i => i.Type == InteractionType.DISLIKE && i.PostId == postId);
+            return new InteractionCount
+            {
+                Likes = likes,
+                Dislikes = dislikes
+            };
         }
     }
 }

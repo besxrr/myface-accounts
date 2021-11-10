@@ -30,5 +30,18 @@ namespace MyFace.Controllers
             var postCount = _posts.Count(searchRequest);
             return FeedModel.Create(searchRequest, posts, postCount);
         }
+        
+        // [HttpGet("")]
+        // public ActionResult<FeedModel> GetFeed([FromQuery] FeedSearchRequest searchRequest)
+        // {
+        //     if (!IsUserAuthenticated(_users, Request))
+        //     {
+        //         return StatusCode(401, "Authentication Failed!");
+        //     }
+        //
+        //     var posts = _posts.SearchFeed(searchRequest);
+        //     var postCount = _posts.Count(searchRequest);
+        //     return FeedModel.Create(searchRequest, posts, postCount);
+        // }
     }
 }

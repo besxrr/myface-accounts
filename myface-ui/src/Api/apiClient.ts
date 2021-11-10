@@ -18,8 +18,8 @@ export interface User {
 }
 
 export enum InteractionType{
-    LIKE = "LIKE",
-    DISLIKE = "DISLIKE"
+    LIKE,
+    DISLIKE,
 }
 
 export interface Interaction {

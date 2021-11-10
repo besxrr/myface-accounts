@@ -1,4 +1,4 @@
-﻿import React, {useContext} from "react";
+﻿import React, {useContext, useEffect, useState} from "react";
 import {createInteraction, InteractionType, Post} from "../../Api/apiClient";
 import {Card} from "../Card/Card";
 import "./PostCard.scss";
@@ -11,12 +11,20 @@ interface PostCardProps {
 
 export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
+    const [likesCount, setLikesCount] = useState(props.post.likes.length);
+    const [dislikesCount, setDislikesCount] = useState(props.post.dislikes.length);
+
+    useEffect(() => {
+    },[likesCount, dislikesCount])
 
     const LikePost = async () => {
         createInteraction({
             InteractionType: InteractionType.LIKE,
             PostId: props.post.id,
-        }, loginContext.header)
+        }, loginContext.header);
+        // new likes from count api request
+        // const newLikes = getLikesByPostId(props.post.id)
+        // setLikesCount(newLikes)
     }
 
     const DislikePost = async () => {
@@ -24,6 +32,8 @@ export function PostCard(props: PostCardProps): JSX.Element {
             InteractionType: InteractionType.DISLIKE,
             PostId: props.post.id,
         }, loginContext.header)
+        setDislikesCount(dislikesCount + 1);
+
     }
 
     return (
@@ -36,9 +46,9 @@ export function PostCard(props: PostCardProps): JSX.Element {
                     <Link className="user-name" to={`/users/${props.post.postedBy.id}`}>{props.post.postedBy.displayName}</Link>
                 </div>
                 <div className="interactions">
-                    <p>👍 {props.post.likes.length}</p>
+                    <p>👍 {likesCount}</p>
                     <button onClick={LikePost}>Like</button>
-                    <p>👎 {props.post.dislikes.length}</p>
+                    <p>👎 {dislikesCount}</p>
                     <button onClick={DislikePost} >Dislike</button>
                     {/*Todo make so user can only like/dislike something once*/}
                     {/*Todo visual indication that user has liked/disliked*/}
