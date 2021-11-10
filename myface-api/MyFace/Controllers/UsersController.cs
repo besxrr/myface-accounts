@@ -33,6 +33,11 @@ namespace MyFace.Controllers
         [HttpGet("{id}")]
         public ActionResult<UserResponse> GetById([FromRoute] int id)
         {
+            if (!IsUserAuthorized(_users, Request))
+            {
+                return StatusCode(401, "Authentication Failed!");
+            }
+            
             var user = _users.GetById(id);
             return new UserResponse(user);
         }
