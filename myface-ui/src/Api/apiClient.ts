@@ -191,7 +191,7 @@ export async function logIn(authHeader: { Authorization: string }):Promise<RoleT
     if (!response.ok) {
         throw new Error("Login Failed!")
     }
-    console.log(await response.json())
+
     return response.json();
 }
 
