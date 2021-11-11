@@ -22,7 +22,7 @@ namespace MyFace.Controllers
         }
 
         [HttpGet("")]
-        public GetLoginResponse LogIn()
+        public ActionResult<GetLoginResponse> LogIn()
         {
             if (IsUserAuthenticated(_users, Request))
             {
@@ -30,7 +30,8 @@ namespace MyFace.Controllers
                 var user = _users.GetById((int) userRole);
                 return new GetLoginResponse(user.Role);
             }
-            return null;
+
+            return StatusCode(401, "Authentication Failed!");
         }
     }
 }
