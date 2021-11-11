@@ -25,8 +25,6 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
         const encodedHeader = encodeHeader(name, password)
         try{
             await verifyLogInDetails(encodedHeader);
-            //If successful, update context to store the value of the HEADER
-            //Store the user info
             setHeader(encodedHeader)
             setUserName(name)
         }
