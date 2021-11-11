@@ -47,5 +47,9 @@
     gap: 20px;
     padding-top: 10px;
     justify-content: right;
+
+    .selected {
+      text-shadow: 0 0 5px blue;
+    }
   }
 }

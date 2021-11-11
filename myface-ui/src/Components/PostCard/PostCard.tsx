@@ -13,14 +13,17 @@ export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
     const [likesCount, setLikesCount] = useState(props.post.likes.length);
     const [dislikesCount, setDislikesCount] = useState(props.post.dislikes.length);
-    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName && i.type == InteractionType.LIKE));
-    const [userHasDisliked, setUserHasDisliked] = useState(props.post.likes.some(i => i.user.username == loginContext.userName && i.type == InteractionType.DISLIKE));
+    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => (i.user.username == loginContext.userName && i.type.toString() == "LIKE")));
+    const [userHasDisliked, setUserHasDisliked] = useState(props.post.dislikes.some(i => (i.user.username == loginContext.userName && i.type.toString() == "DISLIKE")));
+    //TODO remove username from context
 
     useEffect(() => {
         (async () => {
             const interactionCount = await fetchInteractionsForPost(props.post.id)
             setLikesCount(interactionCount.likes)
             setDislikesCount(interactionCount.dislikes)
+            console.log(props.post.likes.some(i => (i.user.username == loginContext.userName && i.type == InteractionType.LIKE)))
+            console.log(props.post.likes.map(i => i.type))
         })()
     },[userHasLiked, userHasDisliked])
 
@@ -30,7 +33,7 @@ export function PostCard(props: PostCardProps): JSX.Element {
             PostId: props.post.id,
         }, loginContext.header);
         setUserHasLiked(!userHasLiked);
-        setUserHasDisliked(!userHasDisliked);
+        setUserHasDisliked(false);
     }
 
     const DislikePost = async () => {
@@ -38,7 +41,7 @@ export function PostCard(props: PostCardProps): JSX.Element {
             InteractionType: InteractionType.DISLIKE,
             PostId: props.post.id,
         }, loginContext.header);
-        setUserHasLiked(!userHasLiked);
+        setUserHasLiked(false);
         setUserHasDisliked(!userHasDisliked);
     }
 
@@ -52,12 +55,10 @@ export function PostCard(props: PostCardProps): JSX.Element {
                     <Link className="user-name" to={`/users/${props.post.postedBy.id}`}>{props.post.postedBy.displayName}</Link>
                 </div>
                 <div className="interactions">
-                    <p>👍 {likesCount}</p>
+                    <p className={userHasLiked ? "selected" : ""}>👍 {likesCount}</p>
                     <button onClick={LikePost}>Like</button>
-                    <p>👎 {dislikesCount}</p>
+                    <p className={userHasDisliked ? "selected" : ""}>👎 {dislikesCount}</p>
                     <button onClick={DislikePost} >Dislike</button>
-                    {/*Todo make so user can only like/dislike something once*/}
-                    {/*Todo visual indication that user has liked/disliked*/}
                 </div>
             </div>
         </Card>
