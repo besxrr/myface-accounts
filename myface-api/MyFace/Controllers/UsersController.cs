@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFace.Models.Database;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -72,8 +73,13 @@ namespace MyFace.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            _users.Delete(id);
-            return Ok();
+            var user = _users.GetById(id);
+            if (user.Role == RoleType.ADMIN)
+            {
+                _users.Delete(id);
+                return Ok();
+            }
+            return StatusCode(403);
         }
     }
 }

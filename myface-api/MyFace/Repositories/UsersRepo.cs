@@ -12,7 +12,7 @@ namespace MyFace.Repositories
         IEnumerable<User> Search(UserSearchRequest search);
         int Count(UserSearchRequest search);
         User GetById(int id);
-        User QueryByUsername(string username);
+        User GetUserByUsername(string username);
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
@@ -104,7 +104,7 @@ namespace MyFace.Repositories
             _context.SaveChanges();
         }
         
-        public User QueryByUsername(string username)
+        public User GetUserByUsername(string username)
         {
             return _context.Users.Single(user => user.Username == username);
         }

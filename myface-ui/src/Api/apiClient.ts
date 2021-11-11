@@ -190,3 +190,15 @@ export async function logIn(authHeader: { Authorization: string }) {
     return true;
 }
 
+export async function deleteUser(userId:number, authHeader: { Authorization: string }){
+    const response = await fetch(`https://localhost:5001/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+            ...authHeader
+        }
+    })
+    if(!response.ok){
+        throw new Error("Authorisaiton Failed!")
+    }
+    return response;
+}
