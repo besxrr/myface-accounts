@@ -188,7 +188,7 @@ export async function logIn(authHeader: { Authorization: string }) {
         throw new Error("Login Failed!")
     }
     console.log(await response.json())
-    return await response.json();
+    return response;
 }
 
 export async function deleteUser(userId:number, authHeader: { Authorization: string }){
