@@ -27,7 +27,7 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
         const encodedHeader = encodeHeader(name, password)
         try {
             let userRole = await verifyLogInDetails(encodedHeader);
-            setUserRole(userRole)
+            setUserRole(userRole.roleType)
             setHeader(encodedHeader)
             setUserName(name)
         } catch (e) {

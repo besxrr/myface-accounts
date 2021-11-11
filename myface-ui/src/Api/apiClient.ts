@@ -26,6 +26,10 @@ export enum InteractionType{
     DISLIKE,
 }
 
+export interface RoleTypeResponse {
+    roleType: RoleType;
+}
+
 export interface Interaction {
     id: number;
     user: User;
@@ -181,7 +185,7 @@ export async function createInteraction(newInteraction: NewInteraction, authHead
     return response;
 }
 
-export async function logIn(authHeader: { Authorization: string }):Promise<RoleType> {
+export async function logIn(authHeader: { Authorization: string }):Promise<RoleTypeResponse> {
     const response = await fetch(`https://localhost:5001/login`, {
         method: "GET",
         headers: {
