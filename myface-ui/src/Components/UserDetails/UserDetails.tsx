@@ -1,7 +1,8 @@
 ﻿import React, {useContext, useEffect, useState} from 'react';
-import {fetchUser, User} from "../../Api/apiClient";
+import {fetchUser, RoleType, User} from "../../Api/apiClient";
 import "./UserDetails.scss";
 import {LoginContext} from "../LoginProvider/LoginProvider";
+import {deleteUser} from "../../Api/apiClient";
 
 interface UserDetailsProps {
     userId: string;
@@ -9,12 +10,19 @@ interface UserDetailsProps {
 
 export function UserDetails(props: UserDetailsProps): JSX.Element {
     const [user, setUser] = useState<User | null>(null);
+    const [hasDeleted, setHasDeleted] = useState(false);
     const loginContext = useContext(LoginContext)
     
     useEffect(() => {
         fetchUser(props.userId, loginContext.header)
             .then(response => setUser(response));
-    }, [props]);
+    }, [props, hasDeleted]);
+
+    const handleDelete = () => {
+        deleteUser(parseInt(props.userId),loginContext.header)
+        setHasDeleted(true);
+        setUser(null);
+    }
     
     if (!user) {
         return <section>Loading...</section>
@@ -31,6 +39,7 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
                     <div className="email">{user.email}</div>
                 </div>
             </div>
+            <button className="delete-user" style={{display: loginContext.userRole === RoleType.ADMIN ? 'block' : 'none'}} onClick={handleDelete}>Delete User</button>
         </section>
     );
 }

@@ -1,12 +1,13 @@
 ﻿import React, {createContext, ReactNode, useState} from "react";
 import encodeHeader from "../../Api/AuthHeader";
-import {logIn as verifyLogInDetails}  from "../../Api/apiClient";
+import {logIn as verifyLogInDetails, RoleType} from "../../Api/apiClient";
 
-interface ILoginContext{
-    header?: {Authorization:string};
+interface ILoginContext {
+    header?: { Authorization: string };
     userName?: string;
     isAdmin: boolean;
-    logIn:(name:string, password:string) => void;
+    userRole?: RoleType;
+    logIn: (name: string, password: string) => void;
     logOut: () => void;
 }
 
@@ -18,35 +19,35 @@ interface LoginManagerProps {
 
 export function LoginProvider(props: LoginManagerProps): JSX.Element {
 
-    const [header, setHeader] = useState<undefined|{Authorization:string}>(undefined);
-    const [userName, setUserName] = useState<string| undefined>(undefined);
+    const [header, setHeader] = useState<undefined | { Authorization: string }>(undefined);
+    const [userName, setUserName] = useState<string | undefined>(undefined);
+    const [userRole, setUserRole] = useState<RoleType | undefined>(undefined);
 
-    async function  logIn(name:string, password:string) {
+    async function logIn(name: string, password: string) {
         const encodedHeader = encodeHeader(name, password)
-        try{
-            await verifyLogInDetails(encodedHeader);
-            //If successful, update context to store the value of the HEADER
-            //Store the user info
+        try {
+            let userRole = await verifyLogInDetails(encodedHeader);
+            setUserRole(userRole.roleType)
             setHeader(encodedHeader)
             setUserName(name)
-        }
-        catch (e){
+        } catch (e) {
             setHeader(undefined)
         }
     }
-    
+
     function logOut() {
         setHeader(undefined);
     }
-    
+
     const context = {
         isAdmin: header !== undefined,
         header: header,
         userName: userName,
+        userRole: userRole,
         logIn: logIn,
         logOut: logOut,
     };
-    
+
     return (
         <LoginContext.Provider value={context}>
             {props.children}

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MyFace.Models.Database;
 using static MyFace.Helpers.PasswordHashHelper;
@@ -110,20 +111,27 @@ namespace MyFace.Data
             new List<string> { "Stafford", "Deport", "sdeport2o", "sdeport2o@wix.com" },
             new List<string> { "Zacharie", "Perchard", "zperchard2p", "zperchard2p@qq.com" },
             new List<string> { "Jane", "Iceton", "jiceton2q", "jiceton2q@lulu.com" },
-            new List<string> { "Marjy", "Beadell", "mbeadell2r", "mbeadell2r@delicious.com" }
+            new List<string> { "Marjy", "Beadell", "mbeadell2r", "mbeadell2r@delicious.com" },
         };
 
-        public static void AddPasswordsToGeneratedUsers()
+        private static void AddPasswordsToGeneratedUsers()
         {
             foreach (var user in Data)
             {
                 user.Insert(4, "hello");
             }
         }
+
+        private static RoleType GetRandomRole()
+        {
+            RoleType[] roles = {RoleType.ADMIN, RoleType.MEMBER};
+            var rand = new Random();
+            RoleType randomRole = roles[rand.Next(roles.Length)];
+            return randomRole;
+        }
         
         public static IEnumerable<User> GetUsers()
         {
-            //TODO Add random password generation
             AddPasswordsToGeneratedUsers();
             return Enumerable.Range(0, NumberOfUsers).Select(CreateRandomUser);
         }
@@ -133,6 +141,7 @@ namespace MyFace.Data
             var salt = GetSalt();
             return new User
             {
+                Role = GetRandomRole(),
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],

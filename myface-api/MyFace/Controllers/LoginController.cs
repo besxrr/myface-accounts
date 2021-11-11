@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Database;
+using MyFace.Models.Response;
 using MyFace.Repositories;
 using static MyFace.Helpers.PasswordHashHelper;
 using static MyFace.Helpers.AuthenticationHelper;
@@ -21,12 +22,15 @@ namespace MyFace.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult LogIn()
+        public ActionResult<GetLoginResponse> LogIn()
         {
             if (IsUserAuthenticated(_users, Request))
             {
-                return StatusCode(200);
+                var userRole = GetUserIdFromRequest(_users, Request);
+                var user = _users.GetById((int) userRole);
+                return new GetLoginResponse(user.Role);
             }
+
             return StatusCode(401, "Authentication Failed!");
         }
     }

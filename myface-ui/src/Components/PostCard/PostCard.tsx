@@ -13,8 +13,8 @@ export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
     const [likesCount, setLikesCount] = useState(props.post.likes.length);
     const [dislikesCount, setDislikesCount] = useState(props.post.dislikes.length);
-    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => (i.user.username == loginContext.userName && i.type.toString() == "LIKE")));
-    const [userHasDisliked, setUserHasDisliked] = useState(props.post.dislikes.some(i => (i.user.username == loginContext.userName && i.type.toString() == "DISLIKE")));
+    const [userHasLiked, setUserHasLiked] = useState(props.post.likes.some(i => (i.user.username == loginContext.userName)));
+    const [userHasDisliked, setUserHasDisliked] = useState(props.post.dislikes.some(i => (i.user.username == loginContext.userName)));
     //TODO remove username from context
 
     useEffect(() => {

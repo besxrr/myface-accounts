@@ -16,10 +16,18 @@ export interface User {
     profileImageUrl: string;
     coverImageUrl: string;
 }
+export enum RoleType{
+    MEMBER,
+    ADMIN,
+}
 
 export enum InteractionType{
     LIKE,
     DISLIKE,
+}
+
+export interface RoleTypeResponse {
+    roleType: RoleType;
 }
 
 export interface Interaction {
@@ -177,7 +185,7 @@ export async function createInteraction(newInteraction: NewInteraction, authHead
     return response;
 }
 
-export async function logIn(authHeader: { Authorization: string }) {
+export async function logIn(authHeader: { Authorization: string }):Promise<RoleTypeResponse> {
     const response = await fetch(`https://localhost:5001/login`, {
         method: "GET",
         headers: {
@@ -187,6 +195,19 @@ export async function logIn(authHeader: { Authorization: string }) {
     if (!response.ok) {
         throw new Error("Login Failed!")
     }
-    return true;
+
+    return response.json();
 }
 
+export async function deleteUser(userId:number, authHeader: AuthHeader | undefined){
+    const response = await fetch(`https://localhost:5001/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+            ...authHeader
+        }
+    })
+    if(!response.ok){
+        throw new Error("Authorisation Failed!")
+    }
+    return response;
+}

@@ -18,7 +18,7 @@ namespace MyFace.Helpers
             try
             {
                 var authUser = DecodeAuthHeader(request.Headers["Authorization"]);
-                var queryUser = users.QueryByUsername(authUser.Username);
+                var queryUser = users.GetUserByUsername(authUser.Username);
                 var passwordHashed = GetHashedPassword(authUser.Password, queryUser.Salt);
                 if (passwordHashed == queryUser.HashedPassword)
                 {

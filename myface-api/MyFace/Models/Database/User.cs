@@ -4,12 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyFace.Models.Database
 {
+    public enum RoleType
+    {
+        MEMBER,
+        ADMIN,
+    }
     public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
+
+        public RoleType Role { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
