@@ -1,5 +1,5 @@
 ﻿import React, {useContext, useEffect, useState} from 'react';
-import {fetchUser, User} from "../../Api/apiClient";
+import {deleteUser, fetchUser, RoleType, User} from "../../Api/apiClient";
 import "./UserDetails.scss";
 import {LoginContext} from "../LoginProvider/LoginProvider";
 
@@ -15,6 +15,13 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
         fetchUser(props.userId, loginContext.header)
             .then(response => setUser(response));
     }, [props]);
+
+    const handleDelete = () => {
+        console.log(loginContext.userRole);
+        console.log(loginContext.userRole === 1);
+        console.log(loginContext.userRole === 0);
+        //deleteUser(parseInt(props.userId),loginContext.header)
+    }
     
     if (!user) {
         return <section>Loading...</section>
@@ -31,6 +38,8 @@ export function UserDetails(props: UserDetailsProps): JSX.Element {
                     <div className="email">{user.email}</div>
                 </div>
             </div>
+            <button className="delete-user"   onClick={handleDelete}>Delete User</button>
+            {/*style={{display: loginContext.userRole === RoleType.ADMIN ? 'block' : 'none'}}*/}
         </section>
     );
 }

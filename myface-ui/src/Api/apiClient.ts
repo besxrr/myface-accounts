@@ -195,7 +195,7 @@ export async function logIn(authHeader: { Authorization: string }):Promise<RoleT
     return response.json();
 }
 
-export async function deleteUser(userId:number, authHeader: { Authorization: string }){
+export async function deleteUser(userId:number, authHeader: AuthHeader | undefined){
     const response = await fetch(`https://localhost:5001/users/${userId}`, {
         method: "DELETE",
         headers: {

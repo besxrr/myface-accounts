@@ -1,11 +1,12 @@
 ﻿import React, {createContext, ReactNode, useState} from "react";
 import encodeHeader from "../../Api/AuthHeader";
-import {logIn as verifyLogInDetails} from "../../Api/apiClient";
+import {logIn as verifyLogInDetails, RoleType} from "../../Api/apiClient";
 
 interface ILoginContext {
     header?: { Authorization: string };
     userName?: string;
     isAdmin: boolean;
+    userRole?: RoleType;
     logIn: (name: string, password: string) => void;
     logOut: () => void;
 }
@@ -20,12 +21,13 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
 
     const [header, setHeader] = useState<undefined | { Authorization: string }>(undefined);
     const [userName, setUserName] = useState<string | undefined>(undefined);
+    const [userRole, setUserRole] = useState<RoleType | undefined>(undefined);
 
     async function logIn(name: string, password: string) {
         const encodedHeader = encodeHeader(name, password)
         try {
             let userRole = await verifyLogInDetails(encodedHeader);
-            // console.log(userRole)
+            setUserRole(userRole)
             setHeader(encodedHeader)
             setUserName(name)
         } catch (e) {
@@ -41,6 +43,7 @@ export function LoginProvider(props: LoginManagerProps): JSX.Element {
         isAdmin: header !== undefined,
         header: header,
         userName: userName,
+        userRole: userRole,
         logIn: logIn,
         logOut: logOut,
     };
